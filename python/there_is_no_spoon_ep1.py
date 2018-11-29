@@ -1,3 +1,4 @@
+# https://www.codingame.com/training/medium/there-is-no-spoon-episode-1
 width, height, search_value = [int(raw_input())] + [int(raw_input())] + ["0"]
 grid = [raw_input() for _ in range(height)]
 
