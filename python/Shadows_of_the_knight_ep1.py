@@ -1,3 +1,4 @@
+# https://www.codingame.com/training/medium/shadows-of-the-knight-episode-1
 import sys
 import math
 min_w, min_h, max_w, max_h, n, x, y = [0,0] + [int(i) for i in raw_input().split()] + [int(raw_input())] + [int(i) for i in raw_input().split()]
