@@ -1,0 +1,115 @@
+using System;
+using System.Collections.Generic;
+
+class Solution
+{
+    // Set of the current nodes we are checking
+    private static Dictionary<(int, int), int> frontier = new Dictionary<(int, int), int>();
+    // Neighbouring nodes to the frontier that have not been checked
+    private static Dictionary<(int, int), int> nextFrontier = new Dictionary<(int, int), int>();
+    // towers can have the same value, so we need to link names with an unique id
+    private static readonly List<char> towerIDs = new List<char>();
+    // game map
+    private static char[,] map;
+    
+    public static void Main(string[] args)
+    {
+        int W = int.Parse(Console.ReadLine());
+        int H = int.Parse(Console.ReadLine());
+        map = new char[W,H];
+        towerIDs.Add('+'); // Set ID 0 to +
+
+        for (int y = 0; y < H; y++)
+        {
+            string row = Console.ReadLine();
+            for(int x = 0; x < W; x++)
+            {
+                map[x, y] = row[x];
+                if(row[x] != '.' && row[x] != '#')
+                {
+                    towerIDs.Add(row[x]);
+                    frontier.Add((x, y), towerIDs.Count - 1);
+                }
+            }
+        }
+
+        // When the frontier is empty, we have reached all areas of the map
+        while(frontier.Count > 0)
+        {
+            // Reset next Frontier
+            nextFrontier = new Dictionary<(int, int), int>();
+            // Step over each frontier node and check its neighbors for flooding
+            foreach(KeyValuePair<(int X, int Y), int> pair in frontier)
+            {
+                // Get Frontiers 
+                // check up when within constraints
+                if(pair.Key.Y != 0)
+                {
+                    ClaimFrontier(pair.Key.X, pair.Key.Y - 1, pair.Value);
+                }
+
+                // check down when within constraints
+                if(pair.Key.Y < H - 1)
+                {
+                    ClaimFrontier(pair.Key.X, pair.Key.Y + 1, pair.Value);
+                }
+
+                // check left when within constraints
+                if(pair.Key.X != 0)
+                {
+                    ClaimFrontier(pair.Key.X - 1, pair.Key.Y, pair.Value);
+                }
+
+                // check right when within constraints
+                if(pair.Key.X < W - 1)
+                {
+                    ClaimFrontier(pair.Key.X + 1, pair.Key.Y, pair.Value);
+                }
+            }
+
+            // Fill the next frontier positions on the map with tower IDs or +
+            foreach(KeyValuePair<(int X, int Y), int> pair in nextFrontier)
+            {
+                map[pair.Key.X, pair.Key.Y] = towerIDs[pair.Value];
+            }
+
+            // Step to the next round using the nextFrontier coordinates
+            frontier = nextFrontier;
+        }
+
+        // output each row in the map as a string
+        for(int y = 0; y < H; y++)
+        {
+            string row = "";
+            for(int x = 0; x < W; x++)
+            {
+                row += map[x, y];
+            }
+            Console.WriteLine(row);
+        }
+        
+    }
+
+    /**
+    * Request a node to be added to a tower's frontier. If the node already has a
+    * claim on it, neither tower is allowed move to those coords and the node is 
+    * assigned a + on the map  
+    */
+    private static void ClaimFrontier(int x, int y, int towerID)
+    {
+        // Has this node been claimed
+        if(nextFrontier.ContainsKey((x, y)))
+        {
+            // check for duplicate claims by the same tower id
+            if(nextFrontier[(x, y)] != towerID)
+            {
+                nextFrontier[(x, y)] = 0;
+            }
+        }
+        //viable nodes are designated as a .
+        else if(map[x, y] == '.')
+        {
+            nextFrontier.Add((x, y), towerID);
+        }
+    }
+}
