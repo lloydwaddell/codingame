@@ -1,6 +1,57 @@
 using System;
 using System.Collections.Generic;
 
+/*
+* The Problem:
+* Given a grid consisting of ‘.’ (visitable points) and ‘#’ (un-visitable points), and other entities for the defence towers, output a map showing the area coverage of each tower, based on distance.
+* -------------------------------------------------- xxx --------------------------------------------------
+* 
+* Rules:
+* 1. Each tower has an I.D., which is not '#', '.' or '+'. Note that 2 towers may have the same I.D..
+* 2. If 2 towers can reach a spot at the exact same time, mark that spot '+'.
+* 3. Towers can't send troops through un-visitable spots ('#').
+* 4. If a tower can get to a spot first, mark the spot by its I.D..
+* 5. This is the legend:
+* (i) '.' = reachable nodes
+* (ii) '#' = unreachable nodes
+* (iii) any other character = a tower's I.D.
+* 6. Troops sent out by the towers at a particular spot can immediately move by distance 1 in the cardinal directions, i.e. UP, DOWN, LEFT, RIGHT (diagonals not possible).
+* 7. If a spot on the map cannot be accessed (regardless of whether it is visitable or not) assign that spot with the character it had in the original map.
+* -------------------------------------------------- xxx --------------------------------------------------
+* 
+* Example:
+* 
+* consider the following grid:
+* ...#.
+* A#...
+* #..B.
+* .....
+* 
+* At time = 1, they will reach…
+* A..#.
+* A#.B.
+* #.BBB
+* ...B.
+* 
+* At time = 2, they will reach…
+* AA.#.
+* A#BBB
+* #BBBB
+* ..BBB
+* 
+* At time = 3, they will reach…
+* AA+#B
+* A#BBB
+* #BBBB
+* .BBBB
+* (Note that, both A and B can reach spot (2,0) at time = 3, so that spot is made into ‘+’)
+* 
+* At time = 4, they will reach…
+* AA+#B
+* A#BBB
+* #BBBB
+* BBBBB
+*/
 class Solution
 {
     // Set of the current nodes we are checking
